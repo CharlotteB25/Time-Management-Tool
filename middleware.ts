@@ -4,7 +4,6 @@ import type { NextRequest } from "next/server";
 export function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
 
-  // Only protect these routes
   const isProtected =
     pathname.startsWith("/tracker") ||
     pathname.startsWith("/history") ||
@@ -12,7 +11,6 @@ export function middleware(req: NextRequest) {
 
   if (!isProtected) return NextResponse.next();
 
-  // NextAuth session cookie names
   const token =
     req.cookies.get("__Secure-next-auth.session-token")?.value ||
     req.cookies.get("next-auth.session-token")?.value;
