@@ -1,18 +1,16 @@
-import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 
-const TZ = "Europe/Brussels";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function TimerRunningBanner() {
   const session = await auth();
   const userId = session?.user?.id;
-  const role = session?.user?.role;
+  if (!userId) return null;
 
-  // Admins don't need tracker/history banner
-  if (!userId || role === "ADMIN") return null;
-
-  const running = await prisma.timeSession.findFirst({
+  const open = await prisma.timeSession.findFirst({
     where: { userId, endedAt: null },
     orderBy: { startedAt: "desc" },
     select: {
@@ -22,30 +20,32 @@ export async function TimerRunningBanner() {
     },
   });
 
-  if (!running) return null;
-
-  const title = running.category?.name ?? "Running timer";
-  const desc = running.description?.trim();
+  if (!open) return null;
 
   return (
-    <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="font-semibold text-amber-900">
-            ⏱ Timer is running: {title}
-          </div>
-          {desc ? (
-            <div className="text-amber-900/80">{desc}</div>
-          ) : (
-            <div className="text-amber-900/60">No description</div>
-          )}
+    <div className="w-full border-b border-red-200 bg-red-50 px-4 py-2 text-sm">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
+        <div className="text-neutral-900">
+          <span className="font-semibold">Timer loopt:</span>{" "}
+          {open.category.name}
+          {open.description ? (
+            <span className="text-neutral-700"> · {open.description}</span>
+          ) : null}
+          <span className="ml-2 text-neutral-600">
+            (gestart om{" "}
+            {open.startedAt.toLocaleTimeString("nl-BE", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+            )
+          </span>
         </div>
 
         <Link
           href="/tracker"
-          className="inline-flex w-fit items-center justify-center rounded-xl border bg-white px-3 py-2 text-sm hover:bg-neutral-50"
+          className="rounded-lg bg-black px-3 py-1.5 text-xs text-white hover:bg-red-600 transition"
         >
-          Go to tracker
+          Naar tracker
         </Link>
       </div>
     </div>
