@@ -1,3 +1,4 @@
+// prisma.config.ts
 import "dotenv/config";
 import { defineConfig, env } from "prisma/config";
 
@@ -5,9 +6,9 @@ export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
-    seed: "tsx prisma/seed.ts", // new update from prisma 7, before only in package.json
+    seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    url: env("DATABASE_URL"),
+    url: env("DIRECT_DATABASE_URL"),
   },
 });
