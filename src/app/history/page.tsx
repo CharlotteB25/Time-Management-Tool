@@ -105,140 +105,145 @@ export default async function HistoryPage() {
   const weekRows = sortMap(weekByCategory);
 
   return (
-    <main className="min-h-screen p-6 bg-neutral-50">
-      <div className="mx-auto max-w-4xl space-y-6">
-        <header className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold">History</h1>
-            <p className="text-sm text-neutral-600">Logged in as {userName}</p>
-          </div>
-          <TimerRunningBanner />
-          <div className="flex gap-2">
-            <Link
-              href="/tracker"
-              className="rounded-xl border bg-white px-3 py-2 text-sm hover:bg-neutral-50"
-            >
-              Back to tracker
-            </Link>
-            <Link
-              href="/logout"
-              className="rounded-xl border bg-white px-3 py-2 text-sm hover:bg-neutral-50"
-            >
-              Log out
-            </Link>
-          </div>
-        </header>
-
-        {/* Totals cards */}
-        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="rounded-2xl border bg-white p-5 shadow-sm">
-            <div className="text-sm text-neutral-600">Today</div>
-            <div className="mt-1 font-mono text-2xl">
-              {formatHMS(todayTotal)}
+    <>
+      <TimerRunningBanner />
+      <main className="min-h-screen p-6 bg-neutral-50">
+        <div className="mx-auto max-w-4xl space-y-6">
+          <header className="flex items-start justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-semibold">History</h1>
+              <p className="text-sm text-neutral-600">
+                Logged in as {userName}
+              </p>
             </div>
-            <div className="mt-3 space-y-1">
-              {todayRows.length ? (
-                todayRows.map((r) => (
-                  <div key={r.name} className="flex justify-between text-sm">
-                    <span className="text-neutral-700">{r.name}</span>
-                    <span className="font-mono">{formatHMS(r.seconds)}</span>
+
+            <div className="flex gap-2">
+              <Link
+                href="/tracker"
+                className="rounded-xl border bg-white px-3 py-2 text-sm hover:bg-neutral-50"
+              >
+                Back to tracker
+              </Link>
+              <Link
+                href="/logout"
+                className="rounded-xl border bg-white px-3 py-2 text-sm hover:bg-neutral-50"
+              >
+                Log out
+              </Link>
+            </div>
+          </header>
+
+          {/* Totals cards */}
+          <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="rounded-2xl border bg-white p-5 shadow-sm">
+              <div className="text-sm text-neutral-600">Today</div>
+              <div className="mt-1 font-mono text-2xl">
+                {formatHMS(todayTotal)}
+              </div>
+              <div className="mt-3 space-y-1">
+                {todayRows.length ? (
+                  todayRows.map((r) => (
+                    <div key={r.name} className="flex justify-between text-sm">
+                      <span className="text-neutral-700">{r.name}</span>
+                      <span className="font-mono">{formatHMS(r.seconds)}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-sm text-neutral-500">
+                    No sessions today.
                   </div>
-                ))
-              ) : (
-                <div className="text-sm text-neutral-500">
-                  No sessions today.
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          </div>
 
-          <div className="rounded-2xl border bg-white p-5 shadow-sm">
-            <div className="text-sm text-neutral-600">This week</div>
-            <div className="mt-1 font-mono text-2xl">
-              {formatHMS(weekTotal)}
-            </div>
-            <div className="mt-3 space-y-1">
-              {weekRows.length ? (
-                weekRows.map((r) => (
-                  <div key={r.name} className="flex justify-between text-sm">
-                    <span className="text-neutral-700">{r.name}</span>
-                    <span className="font-mono">{formatHMS(r.seconds)}</span>
+            <div className="rounded-2xl border bg-white p-5 shadow-sm">
+              <div className="text-sm text-neutral-600">This week</div>
+              <div className="mt-1 font-mono text-2xl">
+                {formatHMS(weekTotal)}
+              </div>
+              <div className="mt-3 space-y-1">
+                {weekRows.length ? (
+                  weekRows.map((r) => (
+                    <div key={r.name} className="flex justify-between text-sm">
+                      <span className="text-neutral-700">{r.name}</span>
+                      <span className="font-mono">{formatHMS(r.seconds)}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-sm text-neutral-500">
+                    No sessions this week.
                   </div>
-                ))
-              ) : (
-                <div className="text-sm text-neutral-500">
-                  No sessions this week.
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Recent sessions */}
-        <section className="rounded-2xl border bg-white p-5 shadow-sm">
-          <h2 className="text-sm font-medium text-neutral-700">
-            Recent sessions
-          </h2>
+          {/* Recent sessions */}
+          <section className="rounded-2xl border bg-white p-5 shadow-sm">
+            <h2 className="text-sm font-medium text-neutral-700">
+              Recent sessions
+            </h2>
 
-          <div className="mt-3 overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="text-left text-neutral-500">
-                <tr className="border-b">
-                  <th className="py-2 pr-3">Task</th>
-                  <th className="py-2 pr-3">Start</th>
-                  <th className="py-2 pr-3">End</th>
-                  <th className="py-2 pr-3">Duration</th>
-                  <th className="py-2">Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                {normalized.slice(0, 30).map((s) => (
-                  <tr key={s.id} className="border-b last:border-b-0">
-                    <td className="py-2 pr-3 font-medium">
-                      {s.categoryName}
-                      {s.isRunning ? (
-                        <span className="ml-2 inline-flex rounded-full border border-emerald-600 bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700">
-                          Running
-                        </span>
-                      ) : null}
-                    </td>
-                    <td className="py-2 pr-3">
-                      {DateTime.fromJSDate(s.startedAt)
-                        .setZone(TZ)
-                        .toFormat("dd/LL HH:mm")}
-                    </td>
-                    <td className="py-2 pr-3">
-                      {s.endedAt
-                        ? DateTime.fromJSDate(s.endedAt)
-                            .setZone(TZ)
-                            .toFormat("dd/LL HH:mm")
-                        : "—"}
-                    </td>
-                    <td className="py-2 pr-3 font-mono">
-                      {formatHMS(s.durationSec)}
-                    </td>
-                    <td className="py-2 text-neutral-700">
-                      {s.description ?? ""}
-                    </td>
+            <div className="mt-3 overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="text-left text-neutral-500">
+                  <tr className="border-b">
+                    <th className="py-2 pr-3">Task</th>
+                    <th className="py-2 pr-3">Start</th>
+                    <th className="py-2 pr-3">End</th>
+                    <th className="py-2 pr-3">Duration</th>
+                    <th className="py-2">Description</th>
                   </tr>
-                ))}
-                {!normalized.length ? (
-                  <tr>
-                    <td className="py-3 text-neutral-500" colSpan={5}>
-                      No sessions yet.
-                    </td>
-                  </tr>
-                ) : null}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {normalized.slice(0, 30).map((s) => (
+                    <tr key={s.id} className="border-b last:border-b-0">
+                      <td className="py-2 pr-3 font-medium">
+                        {s.categoryName}
+                        {s.isRunning ? (
+                          <span className="ml-2 inline-flex rounded-full border border-emerald-600 bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700">
+                            Running
+                          </span>
+                        ) : null}
+                      </td>
+                      <td className="py-2 pr-3">
+                        {DateTime.fromJSDate(s.startedAt)
+                          .setZone(TZ)
+                          .toFormat("dd/LL HH:mm")}
+                      </td>
+                      <td className="py-2 pr-3">
+                        {s.endedAt
+                          ? DateTime.fromJSDate(s.endedAt)
+                              .setZone(TZ)
+                              .toFormat("dd/LL HH:mm")
+                          : "—"}
+                      </td>
+                      <td className="py-2 pr-3 font-mono">
+                        {formatHMS(s.durationSec)}
+                      </td>
+                      <td className="py-2 text-neutral-700">
+                        {s.description ?? ""}
+                      </td>
+                    </tr>
+                  ))}
+                  {!normalized.length ? (
+                    <tr>
+                      <td className="py-3 text-neutral-500" colSpan={5}>
+                        No sessions yet.
+                      </td>
+                    </tr>
+                  ) : null}
+                </tbody>
+              </table>
+            </div>
 
-          <p className="mt-3 text-xs text-neutral-500">
-            Note: for now, totals are based on sessions by their start time. (We
-            can add “split sessions over midnight” later if needed.)
-          </p>
-        </section>
-      </div>
-    </main>
+            <p className="mt-3 text-xs text-neutral-500">
+              Note: for now, totals are based on sessions by their start time.
+              (We can add “split sessions over midnight” later if needed.)
+            </p>
+          </section>
+        </div>
+      </main>
+    </>
   );
 }
