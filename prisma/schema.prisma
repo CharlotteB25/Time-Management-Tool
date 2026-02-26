@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ACCOUNTING
+  RECEPTION
+  SALES
+  ADMIN
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  role         Role
+  isActive     Boolean  @default(true)
+  passwordHash String
+
+  sessions  TimeSession[]
+  edits     TimeSessionEdit[] @relation("EditsByAdmin")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TaskCategory {
+  id        String  @id @default(cuid())
+  role      Role
+  name      String
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
+
+  sessions  TimeSession[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([role, name])
+}
+
+model TimeSession {
+  id          String   @id @default(cuid())
+  userId      String
+  categoryId  String
+  description String?
+
+  startedAt   DateTime @default(now())
+  endedAt     DateTime?
+  durationSec Int?
+
+  user        User         @relation(fields: [userId], references: [id])
+  category    TaskCategory @relation(fields: [categoryId], references: [id])
+  edits       TimeSessionEdit[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TimeSessionEdit {
+  id        String   @id @default(cuid())
+  sessionId String
+  adminId   String
+
+  before    Json
+  after     Json
+  reason    String?
+
+  session   TimeSession @relation(fields: [sessionId], references: [id])
+  admin     User        @relation("EditsByAdmin", fields: [adminId], references: [id])
+
+  createdAt DateTime @default(now())
+}
