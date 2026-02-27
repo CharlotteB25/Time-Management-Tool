@@ -10,6 +10,7 @@ enum Role {
   ACCOUNTING
   RECEPTION
   SALES
+  MANAGEMENT
   ADMIN
 }
 

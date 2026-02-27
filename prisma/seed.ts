@@ -1,10 +1,19 @@
 import "dotenv/config";
 import { PrismaClient, Role } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 import bcrypt from "bcrypt";
 
-const connectionString = process.env.DATABASE_URL!;
-const adapter = new PrismaPg({ connectionString });
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) throw new Error("DATABASE_URL is not set");
+
+// match production connection behaviour
+const pool = new Pool({
+  connectionString,
+  ssl: { rejectUnauthorized: false },
+});
+
+const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
@@ -89,6 +98,8 @@ async function main() {
     { role: Role.SALES, name: "Social media & marketingacties", sortOrder: 10 },
     { role: Role.SALES, name: "Stockbeheer & voertuigcontrole", sortOrder: 11 },
     { role: Role.SALES, name: "Overige taken", sortOrder: 12 },
+
+    { role: Role.MANAGEMENT, name: "Management & administratie", sortOrder: 1 },
   ];
 
   for (const c of categories) {
