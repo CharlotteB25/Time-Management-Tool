@@ -171,8 +171,11 @@ export default function TrackerClient({
                 <button
                   onClick={onStop}
                   disabled={busy || !openSession}
-                  className="rounded-xl bg-black px-4 py-2 text-white disabled:opacity-50 hover:bg-red-600 transition"
+                  className="rounded-xl bg-black px-4 py-2 text-white disabled:opacity-50 hover:bg-red-600 transition inline-flex items-center gap-2"
                 >
+                  {busy ? (
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                  ) : null}
                   Stop
                 </button>
               </div>
@@ -260,9 +263,12 @@ export default function TrackerClient({
                   openSession?.categoryId === selectedCategoryId ||
                   (selectedRequiresDescription && !description.trim())
                 }
-                className="rounded-xl bg-black px-4 py-2.5 text-white font-medium transition hover:bg-red-600 disabled:opacity-50 active:scale-[0.99]"
+                className="rounded-xl bg-black px-4 py-2.5 text-white font-medium transition hover:bg-red-600 disabled:opacity-50 active:scale-[0.99] inline-flex items-center gap-2"
               >
-                {primaryLabel}
+                {busy ? (
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                ) : null}
+                {busy ? "Bezig…" : primaryLabel}
               </button>
             </div>
           </section>

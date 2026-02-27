@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Providers } from "./Providers";
 
 export const metadata: Metadata = {
   title: "Leie Autos Time Tool",
@@ -13,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="nl">
-      <body className=" bg-neutral-50 text-neutral-900">{children}</body>
+      <body className="bg-neutral-50 text-neutral-900">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

@@ -16,6 +16,7 @@
     "luxon": "^3.7.2",
     "next": "16.1.6",
     "next-auth": "^5.0.0-beta.30",
+    "nextjs-toploader": "^3.9.17",
     "pg": "^8.19.0",
     "prisma": "^7.4.1",
     "react": "19.2.3",
