@@ -1,31 +1,32 @@
+// middleware.ts (root, not inside src)
+
+import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
-export const runtime = "edge";
-
-export function middleware(req: NextRequest) {
-  const { pathname, search } = req.nextUrl;
+export default auth((req) => {
+  const { nextUrl } = req;
+  const user = req.auth?.user;
 
   const isProtected =
-    pathname.startsWith("/tracker") ||
-    pathname.startsWith("/history") ||
-    pathname.startsWith("/admin");
+    nextUrl.pathname.startsWith("/tracker") ||
+    nextUrl.pathname.startsWith("/history") ||
+    nextUrl.pathname.startsWith("/admin");
 
   if (!isProtected) return NextResponse.next();
 
-  const token =
-    req.cookies.get("__Secure-next-auth.session-token")?.value ||
-    req.cookies.get("next-auth.session-token")?.value;
+  if (!user) {
+    const loginUrl = new URL("/login", nextUrl);
+    loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
+    return NextResponse.redirect(loginUrl);
+  }
 
-  if (!token) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/login";
-    url.searchParams.set("next", pathname + (search || ""));
-    return NextResponse.redirect(url);
+  // Optional: protect admin routes
+  if (nextUrl.pathname.startsWith("/admin") && user.role !== "ADMIN") {
+    return NextResponse.redirect(new URL("/tracker", nextUrl));
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
   matcher: ["/tracker/:path*", "/history/:path*", "/admin/:path*"],

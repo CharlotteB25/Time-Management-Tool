@@ -4,7 +4,9 @@ import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true, // for development with self-signed certs
   session: { strategy: "jwt" },
+
   pages: { signIn: "/login" },
 
   providers: [
