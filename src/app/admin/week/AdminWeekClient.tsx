@@ -384,11 +384,6 @@ export default function AdminWeekClient({
             })}
           </div>
         </section>
-
-        <p className="text-xs text-neutral-500">
-          Tip: this view auto-scales row height to fit your screen
-          (06:00–19:00).
-        </p>
       </div>
     </main>
   );

@@ -236,11 +236,6 @@ export default async function HistoryPage() {
                 </tbody>
               </table>
             </div>
-
-            <p className="mt-3 text-xs text-neutral-500">
-              Note: for now, totals are based on sessions by their start time.
-              (We can add “split sessions over midnight” later if needed.)
-            </p>
           </section>
         </div>
       </main>
