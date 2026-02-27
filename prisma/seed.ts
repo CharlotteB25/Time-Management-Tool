@@ -99,7 +99,19 @@ async function main() {
     { role: Role.SALES, name: "Stockbeheer & voertuigcontrole", sortOrder: 11 },
     { role: Role.SALES, name: "Overige taken", sortOrder: 12 },
 
-    { role: Role.MANAGEMENT, name: "Management & administratie", sortOrder: 1 },
+    { role: Role.MANAGEMENT, name: "Emails", sortOrder: 1 },
+    { role: Role.MANAGEMENT, name: "GM Garanties", sortOrder: 2 },
+    { role: Role.MANAGEMENT, name: "Facturatie", sortOrder: 3 },
+    {
+      role: Role.MANAGEMENT,
+      name: "Werkplaats Management / Fiches",
+      sortOrder: 4,
+    },
+    { role: Role.MANAGEMENT, name: "DG", sortOrder: 5 },
+    { role: Role.MANAGEMENT, name: "Magazijn / Onderdelen", sortOrder: 6 },
+    { role: Role.MANAGEMENT, name: "Opvolging Sandra en Val", sortOrder: 7 },
+    { role: Role.MANAGEMENT, name: "Bestek / Expertises", sortOrder: 8 },
+    { role: Role.MANAGEMENT, name: "Overige taken", sortOrder: 9 },
   ];
 
   for (const c of categories) {
@@ -136,7 +148,7 @@ async function main() {
     { name: "Silvio", email: "silvio@leie-autos.be", role: Role.SALES },
     { name: "Christophe", email: "kristoff@leie-autos.be", role: Role.SALES },
     { name: "Filiep", email: "filiep@leie-autos.be", role: Role.SALES },
-    { name: "Manon", email: "manon@leie-autos.be", role: Role.SALES },
+    { name: "Manon", email: "manon@leie-autos.be", role: Role.MANAGEMENT },
     { name: "Admin", email: "admin@leie-autos.be", role: Role.ADMIN },
   ];
 
