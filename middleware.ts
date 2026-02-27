@@ -1,32 +1,38 @@
-// middleware.ts (root, not inside src)
+// middleware.ts (root)
 
-import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export default auth((req) => {
-  const { nextUrl } = req;
-  const user = req.auth?.user;
+export function middleware(req: NextRequest) {
+  const { pathname, search } = req.nextUrl;
 
   const isProtected =
-    nextUrl.pathname.startsWith("/tracker") ||
-    nextUrl.pathname.startsWith("/history") ||
-    nextUrl.pathname.startsWith("/admin");
+    pathname.startsWith("/tracker") ||
+    pathname.startsWith("/history") ||
+    pathname.startsWith("/admin");
 
   if (!isProtected) return NextResponse.next();
 
-  if (!user) {
-    const loginUrl = new URL("/login", nextUrl);
-    loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
-    return NextResponse.redirect(loginUrl);
+  // NextAuth v5 (Auth.js) cookie names + older next-auth names
+  const token =
+    req.cookies.get("__Secure-authjs.session-token")?.value ||
+    req.cookies.get("authjs.session-token")?.value ||
+    req.cookies.get("__Secure-next-auth.session-token")?.value ||
+    req.cookies.get("next-auth.session-token")?.value;
+
+  if (!token) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("next", pathname + (search || ""));
+    return NextResponse.redirect(url);
   }
 
-  // Optional: protect admin routes
-  if (nextUrl.pathname.startsWith("/admin") && user.role !== "ADMIN") {
-    return NextResponse.redirect(new URL("/tracker", nextUrl));
-  }
+  // NOTE: We cannot reliably enforce role-based admin access here
+  // without importing auth/prisma (would exceed Edge size).
+  // We'll enforce role checks server-side in /admin layout/page.
 
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: ["/tracker/:path*", "/history/:path*", "/admin/:path*"],
